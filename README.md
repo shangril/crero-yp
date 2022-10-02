@@ -6,7 +6,7 @@ See crero-yp working at https://clewn.org/yp.php
 ## Deployment instructions
 
 * clone with git or download manually the package from this GitHub page. 
-* edit config.php with site name, path to a header free form .php file to include on every page (optional) and a footer (same thing)
+* edit config.php with site name, path to a free form .php header file to include on top of every page (optional) and a footer (same thing)
 * deploy on your web server the following files : yp.php ; config.php ; index.php.template
 
 Point your web browser to yourserver/yp.php . The script will create the necessary ./yp/ and ./yp/d/ directories and create an index.php in ./yp/ based on index.php.template. 
