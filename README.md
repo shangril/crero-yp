@@ -6,7 +6,7 @@ See crero-yp working at https://clewn.org/yp.php
 ## Deployment instructions
 
 * clone with git or download manually the package from this GitHub page. 
-* edit config.php with site name, path to a free form .php header file to include on top of every page (optional) and a footer (same thing)
+* edit the 3 config.php variables with site name, path to a free form .php header file to include on top of every page (optional) and a footer (same thing)
 * deploy on your web server the following files : yp.php ; config.php ; index.php.template
 
 Point your web browser to yourserver/yp.php . The script will create the necessary ./yp/ and ./yp/d/ directories and create an index.php in ./yp/ based on index.php.template. 
@@ -26,3 +26,5 @@ Note the following :
 * If the server serves both http and https as weel it will work fine
 * But if the server is available in https but fails to redirect or serve http, crero-yp will fallback to provide a non-working http link to users, and will be unable to communicate with the Crero YP API to fetch useful informations like artist list, albums names and so on. 
 
+### A very secondary point
+By default yp.php will include a link named after the "site" variable of config.php that will point to the index file in the same directory, on top of pages. 
