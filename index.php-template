@@ -1,0 +1,55 @@
+<?php
+error_reporting(0);
+
+
+
+
+if (!(isset($_GET['url'])&&isset($_GET['name'])&&isset($_GET['description']))){
+	
+	die();
+}
+$url=$_GET['url'];
+$name=$_GET['name'];
+$description=$_GET['description'];
+
+$iexist=Array();
+$iexisttouch=null;
+
+$touchs=array_diff(scandir ('./d'), array ('.', '..', '.htaccess'));
+
+foreach ($touchs as $touch){
+	if (microtime(true)-floatval(filemtime('./d/'.$touch))>30*24*60*60){
+		unlink('./d/'.$touch);
+	}
+}	
+foreach ($touchs as $touch){
+	$label=unserialize(file_get_contents('./d/'.$touch));
+	if ($label['url']===$url&&$label['name']===$name){
+		$iexist=$label;
+		$iexisttouch=$touch;
+		
+	}
+}
+	
+if (isset($iexisttouch)){
+	$iexist['ping']++;
+	
+	
+}	
+else {
+	$iexist['ping']=1;
+	$iexisttouch=microtime(true).'.dat';
+}
+
+$iexist['url']=$url;
+$iexist['name']=$name;
+$iexist['description']=$description;
+
+file_put_contents('./d/'.$iexisttouch, serialize($iexist));
+
+
+
+
+
+
+?>
