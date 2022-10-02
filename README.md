@@ -23,7 +23,7 @@ Note the following :
 
 * If the CreRo server serves its site only in http everything will work fine
 * If the https is properly configured, that is to say that pointing to http cleanly redirects to the https version of the page it will work fine
-* If the server serves both http and https as weel it will work fine
+* If the server serves both http and https as well it will work fine
 * But if the server is available in https but fails to redirect or serve http, crero-yp will fallback to provide a non-working http link to users, and will be unable to communicate with the Crero YP API to fetch useful informations like artist list, albums names and so on. 
 
 ### A very secondary point
