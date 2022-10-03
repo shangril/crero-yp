@@ -47,7 +47,7 @@ The following setting is a good idea:
 
 crero-yp is able to query back your CreRo instance to try to reach its crero-yp-api, which is used by the yp server to add a "more item informations..." link in your server entry in its listing, and this link can be used to learn more about your label:
 * its general label style as defined in radio_genres
-* its list of label's artist as defined in "artists" option in your admin panel, -or- if your instance is an mp3-only (typically a playlist webradio/download service with and autobuildradiobase set and its free download tier operated by you containing only mp3 and no flac nor ogg audio files) and its artists option undefined, the whole list of artists provided by the media tier
+* its list of label's artist as defined in "artists" option in your admin panel, -or- if this option is not set, alike if your instance is an mp3-only (typically a playlist webradio/download service with and autobuildradiobase set and its free download tier operated by you containing only mp3 and no flac nor ogg audio files), the whole list of artists provided by the media tier
 * additionnal artist information as defined in highlight-artist-list ; especially the styles for this artist and the free form "info" field that is mainly meant to indicate years active for the music project
 * also, each album, for each artist (sorted by "streaming" and "downloadable" categories)
 * for each album, the whole tracklist.
