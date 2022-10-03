@@ -49,6 +49,6 @@ The question of advanced information
 ** also, each album, for each artist (sorted by "streaming" and "downloadable" categories)
 ** for each album, the whole tracklist.
 ** More to come. 
-*** Note that mp3-only scenario requires that ID3 tags are utf-8 encoded. That is to say that ID3v2.3 or above has been used to tag the audio files. If you got very old mp3 files, encoded with iso-latin-1, non-western or "newly added in utf-8" special alphabet characters will not display correctly and break things in both your Crero instance and in the yp server. Please take a look at https://www.mydigitallife.net/how-to-auto-convert-mp3-id3-tag-charset-to-unicode-utf-8/ to help batch reencoding of old mp3 pre-ID3v2.3 non-utf8 encoded tags. 
+* Note that mp3-only scenario requires that ID3 tags are utf-8 encoded. That is to say that ID3v2.3 or above has been used to tag the audio files. If you got very old mp3 files, encoded with iso-latin-1, non-western or "newly added in utf-8" special alphabet characters will not display correctly and break things in both your Crero instance and in the yp server. Please take a look at https://www.mydigitallife.net/how-to-auto-convert-mp3-id3-tag-charset-to-unicode-utf-8/ to help batch reencoding of old mp3 pre-ID3v2.3 non-utf8 encoded tags. 
 
 The advanced information feature requires that your CreRo instance have a least crero-yp-api.php available with API version >= 1 ; this yp-api was introduced in CreRo for the 20221002 milestone. 
