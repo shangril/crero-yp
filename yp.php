@@ -50,7 +50,21 @@ h1 {
 	float:left;
 	display:inline;
 }
-.label-wrapper {
+
+@media screen and (max-width:800px) {
+	.label-wrapper {
+		text-align:center;
+		width:80%;
+		padding:2px;
+		background-color:#FAFAFA;
+		border-radius:5px;
+	}
+
+
+}
+
+@media screen and (min-width:801px){
+	.label-wrapper {
 	
 	display:inline;
 	float:left;
@@ -60,29 +74,16 @@ h1 {
 	padding:2px;
 	
 
-}
-@media screen and (max-width:800px) {
-	.label-wrapper {
-		text-align:center;
-		width:80%;
-		padding:2px;
-		background-color:#FAFAFA;
-		border-radius:5px;
 	}
-	.label-description-wrapper {
-		padding:2px;
-		background-color:#FAFAFA;
-		border-radius:5px;
-
-
-}
-}
+	
+	
+	}
 
 .label-description-wrapper {
 	text-align:center;
 	padding:2px;
 		background-color:#FAFAFA;
-		border-radius:12px;
+		border-radius:5px;
 
 
 
@@ -90,7 +91,7 @@ h1 {
 
 </style>
 </head><body>
-	<div style="float:right;text-align:right;margin-top:50px;">[<a href="./"><?php echo htmlentities($site);?></a>'s label sites yellowpages] 
+	<div style="float:right;text-align:right;margin-top:150px;">[<a href="./"><?php echo htmlentities($site);?></a>'s label sites yellowpages] 
 </div>
 <div style="float:right;position:fixed;background-color:#C0C0C0;">
 <?php
@@ -119,7 +120,7 @@ foreach ($touchs as $touch){
 			
 		}
 		
-		echo '<span style="float:left;width:18%;border:solid 1px;border-radius:5px;margin:2px;" >';
+		echo '<span class="label-wrapper">';
 		echo '<span >';
 		
 		
@@ -170,7 +171,7 @@ foreach ($touchs as $touch){
 		}
 		
 		
-		echo '<span style="float:left;width:18%;border:solid 1px;border-radius:5px;margin:2px;" >';
+		echo '<span class="label-wrapper" >';
 		echo '<span >';
 		
 		
