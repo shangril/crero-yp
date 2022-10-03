@@ -32,7 +32,7 @@ By default yp.php will include a link named after the "site" variable of config.
 ### Requirement for CreRo instance to be listed in a yp server
 The following admin panel option must mandatory be set for your CreRo instance to be properly displayed by the crero-yp servers you will ping:
 
-* server - this option reflects the topdomain.tld/optional/path/to/CreRo address of the CreRo instance. Anyway, CreRo will not be able to work if not set (or many features in it), and this is the first option that CreRo documentation indicates as to be set. 
+* server - this option reflects the yourdomain.tld/optional/path/to/CreRo address of the CreRo instance. Anyway, CreRo will not be able to work if not set (or many features in it), and this is the first option that CreRo documentation indicates as to be set. 
 * name - the name of your label/netlabel/etc. If not set, there will be no link, because of an empty name, in the YP listing in order to visit your instance
 * description - Can be blank and is not absolutely mandatory but is nevertheless strongly recommended
 
