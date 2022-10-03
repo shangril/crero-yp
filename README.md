@@ -45,6 +45,8 @@ The following setting is a good idea:
 
 #### The question of advanced information
 
+##### The advanced information feature requires that your CreRo instance have a least crero-yp-api.php available with API version >= 1 ; this yp-api was introduced in CreRo for the 20221002 milestone. 
+
 crero-yp is able to query back your CreRo instance to try to reach its crero-yp-api, which is used by the yp server to add a "more item informations..." link in your server entry in its listing, and this link can be used to learn more about your label:
 * its general label style as defined in radio_genres
 * its list of label's artist as defined in "artists" option in your admin panel, -or- if this option is not set, alike if your instance is an mp3-only (typically a playlist webradio/download service with and autobuildradiobase set and its free download tier operated by you containing only mp3 and no flac nor ogg audio files), the whole list of artists provided by the media tier
@@ -55,4 +57,4 @@ crero-yp is able to query back your CreRo instance to try to reach its crero-yp-
  
 Note that the mp3-only, undefined "artists" option scenario requires that ID3 tags are utf-8 encoded. That is to say that ID3v2.3 or above has been used to tag the audio files. If you got very old mp3 files, encoded with iso-latin-1, non-western or "newly added in utf-8" special alphabet characters will not display correctly and break things in both your Crero instance and in the yp server. Please take a look at https://www.mydigitallife.net/how-to-auto-convert-mp3-id3-tag-charset-to-unicode-utf-8/ to help batch reencoding of old mp3 pre-ID3v2.3 non-utf8 encoded tags. 
 
-##### The advanced information feature requires that your CreRo instance have a least crero-yp-api.php available with API version >= 1 ; this yp-api was introduced in CreRo for the 20221002 milestone. 
+
