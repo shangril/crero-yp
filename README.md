@@ -43,7 +43,7 @@ The following setting is a good idea:
 
 * Install a png image named favicon.png at the root of your Crero install. Firstly, you'll have a favicon, helping people to identify your site visually in there (maybe numerous) opened browser tab, in their bookmarks, history, and so on. Secondly, this label logo will be displayed for your entry in the yp service, which also helps identifying your label. Thirdly, your label will have a logo on its pages, and if it has a radio, will display this logo instead of a blank "broken image" square when the radio plays a title that hasn't a cover art linked ot its album. 
 
-The question of advanced information
+#### The question of advanced information
 
 crero-yp is able to query back your CreRo instance to try to reach its crero-yp-api, which is used by the yp server to add a "more item informations..." link in your server entry in its listing, and this link can be used to learn more about your label:
 * its general label style as defined in radio_genres
