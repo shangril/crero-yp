@@ -31,7 +31,7 @@ By default yp.php will include a link named after the "site" variable of config.
 
 ### Requirement for CreRo instance to be listed in a yp server
 
-#### The list of yellowpage servers that your CreRo instance will ping to register in their listing is defined in "creroypservers" option in your CreRo admin panel. Please refer to its online documentation for example server (the currently running and infamous https://clewn.org/yp.php )
+#### The list of yellowpage servers that your CreRo instance will ping to register in their listings is defined in "creroypservers" option in your CreRo admin panel. Please refer to its online documentation for example server (the currently running and infamous https://clewn.org/yp.php )
 
 The following admin panel option must mandatory be set for your CreRo instance to be properly displayed by the crero-yp servers you will ping:
 
