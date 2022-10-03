@@ -30,6 +30,9 @@ Note the following :
 By default yp.php will include a link named after the "site" variable of config.php that will point to the index file in the same directory, on top of pages. 
 
 ### Requirement for CreRo instance to be listed in a yp server
+
+The list of yellowpage servers that your CreRo instance will ping to register in their listing is defined in "creroypservers" option in your CreRo admin panel. Please refer to its online documentation for example server (the currently running and infamous https://clewn.org/yp.php )
+
 The following admin panel option must mandatory be set for your CreRo instance to be properly displayed by the crero-yp servers you will ping:
 
 * server - this option reflects the yourdomain.tld/optional/path/to/CreRo address of the CreRo instance. Anyway, CreRo will not be able to work if not set (or many features in it), and this is the first option that CreRo documentation indicates as to be set. 
