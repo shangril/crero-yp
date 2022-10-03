@@ -38,7 +38,7 @@ The following admin panel option must mandatory be set for your CreRo instance t
 
 The following setting is a good idea:
 
-* Install a png image named favicon.png at the root of your Crero install. Firstly, you'll have a favicon, helping people to identify your site visually in there (maybe numerous) opened browser tab, in their bookmarks, history, and so on. Secondly, this label logo will be displayed for your entry in the yp service, which also helps identifying your label
+* Install a png image named favicon.png at the root of your Crero install. Firstly, you'll have a favicon, helping people to identify your site visually in there (maybe numerous) opened browser tab, in their bookmarks, history, and so on. Secondly, this label logo will be displayed for your entry in the yp service, which also helps identifying your label. Thirdly, your label will have a logo on its pages, and if it has a radio, will display this logo instead of a blank "broken image" square when the radio plays a title that hasn't a cover art linked ot its album. 
 
 The question of advanced information
 
