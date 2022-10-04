@@ -45,6 +45,10 @@ $iexist['url']=$url;
 $iexist['name']=$name;
 $iexist['description']=$description;
 
+if (array_key_exists('forceHTTPS', $_GET)){
+	$iexist['forceHTTPS']=boolval($_GET['forceHTTPS']);
+}
+
 file_put_contents('./d/'.$iexisttouch, serialize($iexist));
 
 

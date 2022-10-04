@@ -93,7 +93,7 @@ h1 {
 </head><body>
 	<div style="float:right;text-align:right;margin-top:150px;">[<a href="./"><?php echo htmlentities($site);?></a>'s label sites yellowpages] 
 </div>
-<div style="float:right;position:fixed;background-color:#C0C0C0;">
+<div style="float:right;<?php if($header_fixed){ echo 'position:fixed;';} ?>background-color:#C0C0C0;">
 <?php
 	error_reporting (0);
 	if (isset($header)){include ($header);}
@@ -114,7 +114,7 @@ foreach ($touchs as $touch){
 		
 		
 		if (array_key_exists('protoHTTPS', $label)){
-			if (boolval($label['protoHTTPS'])===true){
+			if (boolval($label['protoHTTPS'])===true||(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true)){
 				$touch_proto='https';
 			}
 			
@@ -163,8 +163,9 @@ foreach ($touchs as $touch){
 		
 		
 		
+		
 		if (array_key_exists('protoHTTPS', $label)){
-			if (boolval($label['protoHTTPS'])===true){
+			if (boolval($label['protoHTTPS'])===true||(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true)){
 				$touch_proto='https';
 			}
 			
@@ -197,7 +198,7 @@ foreach ($touchs as $touch){
 		echo '</span>';
 		//It's time to update touch_proto
 		
-		if(file_get_contents($label['url'].'/style.css')===file_get_contents(str_replace('http://', 'https://', $label['url']).'/style.css'))
+		if((!(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true))||file_get_contents($label['url'].'/style.css')===file_get_contents(str_replace('http://', 'https://', $label['url']).'/style.css'))
 			{
 				$label['protoHTTPS']=true;
 			}
