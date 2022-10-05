@@ -3,6 +3,13 @@ A simple CMS to run a YellowPage service listing music label websites using CreR
 
 See crero-yp working at https://clewn.org/yp.php
 
+## Server configuration security notice
+
+Some parts of the scripts here rely on $_SERVER PHP superglobal's SERVER_NAME field to redirect void, parameterless calls to API to yp.php which is the human-targeted readable homepage. Make sure that your web server is passing correctly SERVER_NAME as set in your server's vhost configuration, and not rely on browser-provided server name data, which would be a security risk. As an example, on Apache >= 2, the correct behavior is achieved by setting UseCanonicalName = On and set ServerName to the proper name of your sever in your vhost configuratin (see "site-available", "site-enabled", in /etc/apache2, and the a2ensite and a2dissite utilites). 
+
+### On most if not any commercial-grade hostings this setting will have been set for your host. But be aware of this if you administrate your webserver by yourself. 
+
+
 ## Deployment instructions
 
 * clone with git or download manually the package from this GitHub page. 
