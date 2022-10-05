@@ -15,4 +15,16 @@ $footer=null; //can be null ; or can be a string containing a relative path of a
 
 $header_fixed=false;
 
+//*****Here comes the options that ./api will deal with
+//most install will not need them
+
+$yp_api_force_https=false; //Boolean. If set to true, the api will reply to the pinging CreRo instance that it should prefer HTTPS protocol to communicate with this crero-yp server
+//this is mainly used to provide links to pingued servers at bottom of instance pages with HTTPS properly set, regardless of which protocol is specified in the intance list of YP server to ping
+//this can be reverted to false at any time if your instance no longer supports HTTPS
+//but please note that this won't change the behavior of the CreRo instance when pinging the yp server. It will always use the protocol defined by the instance administrator it his/her own list of
+//yp servers to ping
+
+$yp_api_listing="public"; //String. The two valid values can be "public" or "private". If set to public, it indicates that your YP server accept to be listed (typically at the bottom of page) as a server 
+//that the CreRo instance pingued recently and successfully.If set to private, it indicates that your instance wish to not be listed. This is indicative only. The CreRo instance can do what it wants, 
+//regardless of what this setting is. Note that if the setting is not exacty set to a valid value, the CreRo server will likely default to "public". 
 ?>

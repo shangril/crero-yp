@@ -20,9 +20,11 @@ if (file_exists('./index.php-template')&&(!file_exists('./yp/index.php' || filem
 	
 }
 
-$supported_api_versions=Array('1');
+$supported_api_versions=array('1');//which crero_yp_api API versions this yp instance supports 
 
+$remote_provided_api_versions=Array();
 
+$available_on_both_side_api_versions=Array();
 
 ?>
 <!DOCTYPE html>
@@ -139,15 +141,18 @@ foreach ($touchs as $touch){
 		echo  '</span>';
 		
 		//*********** Here comes the API part
+
+		$remote_api_version=file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
+		$remote_provided_api_versions=explode(' ', $remote_api_version);
+		$available_on_both_side_api_versions=array_intersect($supported_api_versions, $remote_provided_api_versions);
 		
-		if ($remote_api_version=file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero_yp_api.php?a=version')!==''){
-			if (in_array($remote_api_version, $supported_api_versions)){
-				echo '<span style="text-align:right;"><a href="./yp.php?m='.urlencode(str_replace('.dat', '', $touch)).'">More item information...</a></span>';
-				
-				
-			}
-		
-		}	
+		if (count($available_on_both_side_api_versions)>0){
+			echo '<span style="text-align:right;"><a href="./yp.php?m='.urlencode(str_replace('.dat', '', $touch)).'">More item information...</a></span>';
+			
+			
+		}
+	
+			
 		//Here ends the API part
 		
 		echo '<br/>'.htmlentities($label['ping']).'<em> points of instant popularity bogo score</em><br/>';
@@ -157,6 +162,10 @@ foreach ($touchs as $touch){
 		echo '</span>';
 	}
 	else if ($_GET['m'].'.dat'==$touch) {
+		
+		
+		
+		
 		$touch_proto='http';
 		
 		$label=unserialize(file_get_contents('./yp/d/'.$touch));
@@ -170,6 +179,13 @@ foreach ($touchs as $touch){
 			}
 			
 		}
+		//*********** Here comes the API part
+		$remote_api_version=file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
+		$remote_provided_api_versions=explode(' ', $remote_api_version);
+		$available_on_both_side_api_versions=array_intersect($supported_api_versions, $remote_provided_api_versions);
+		
+		//Here ends the API part
+
 		
 		
 		echo '<span class="label-wrapper" >';
@@ -212,172 +228,190 @@ foreach ($touchs as $touch){
 		echo '<span><a href="./yp.php">Home</a> &gt; <strong> '.htmlentities($label['name']).'</strong> infos<br/>';
 		
 		//Here comes the crero-yp-api stuff
-		$api_base=$touch_proto.'://'.str_replace('http://', '', $label['url'].'/crero-yp-api.php?');
-		$hook_base='./yp.php?m='.urlencode(str_replace('.dat', '', $touch));
-		
-		if (file_get_contents($api_base.'a=styles_defined')=='1'){
-			echo '<em>General styles:</em> '.htmlspecialchars(str_replace(' ', ', ', trim(file_get_contents($api_base.'a=styles')))).'<br/>';
+		if (count($available_on_both_side_api_versions)>0){
+			$api_base=$touch_proto.'://'.str_replace('http://', '', $label['url'].'/crero-yp-api.php?');
+			$hook_base='./yp.php?m='.urlencode(str_replace('.dat', '', $touch));
 			
-		}
-		else {
-			echo 'There is no music styles defined by this item<br/>';
-		}
-		echo '<hr/><strong><em>'.htmlspecialchars($label['name']).' artists: </em></strong>';
-		
-		$artlist='';
-		
-		if(trim(file_get_contents($api_base.'a=list_artists'))!=''){
-			$artlist=trim(file_get_contents($api_base.'a=list_artists'));
-			}
-			else	{
-				//no artist declared by the label, fallback to list_all_artists (likely a playlist webradio item)
-				if (trim(file_get_contents($apibase.'a=list_all_artists'))!=''){
-					$artlist=file_get_contents($api_base.'a=list_all_artists');
+			
+			///here starts the API Version 1-required queries
+			if (in_array('1', $available_on_both_side_api_versions)){
+				if (true){
+					echo '<em>General styles:</em> '.htmlspecialchars(str_replace(' ', ', ', trim(file_get_contents($api_base.'a=styles')))).'<br/>';
+					
+				}
+				else {
+					echo 'There is no music styles defined by this item<br/>';
+				}
+				echo '<hr/><strong><em>'.htmlspecialchars($label['name']).' artists: </em></strong>';
+				
+				$artlist='';
+				
+				if(trim(file_get_contents($api_base.'a=list_artists'))!=''){
+					$artlist=trim(file_get_contents($api_base.'a=list_artists'));
+					}
+					else	{
+						//no artist declared by the label, fallback to list_all_artists (likely a playlist webradio item)
+						if (trim(file_get_contents($apibase.'a=list_all_artists'))!=''){
+							$artlist=file_get_contents($api_base.'a=list_all_artists');
+						}
+						
+					} 
+				$artlist=trim($artlist);
+				if ($artlist==''){
+					echo 'currently unavailable, sorry...';
 				}
 				
-			} 
-		$artlist=trim($artlist);
-		if ($artlist==''){
-			echo 'currently unavailable, sorry...';
-		}
-		
-		$hlartists=Array();
-		$socdata=trim(file_get_contents($api_base.'a=artist_info'));
-		$soctokens=explode("\n", $socdata);
-		for ($p=0;$p<count($soctokens);$p++){
-			
-			while ($p<count($soctokens)){
-				$socialone=Array();
-				$socialone['name']=$soctokens[$p];
-				$p++;
-				$socialone['styles']=$soctokens[$p];
-				$p++;
-				$socialone['infos']=$soctokens[$p];
-				$p++;
-				$socialone['link']=$soctokens[$p];
-				$hlartists[$socialone['name']]=$socialone;
-				$p++;
-			}
-		}
-	
-		
-		
-		
-		
-		
-		
-		$a_art=explode("\n", $artlist);
-		foreach ($a_art as $art){
-			
-			if (!isset($_GET['a'])){
-				echo '<hr/> <a href="'.$hook_base.'&a='.urlencode($art).'">'.htmlspecialchars($art).'</a> ';
-				if (array_key_exists($art, $hlartists)){
-					echo '(';
-					echo htmlspecialchars(str_replace(' ', ', ', trim($hlartists[$art]['styles'])));
+				$hlartists=Array();
+				$socdata=trim(file_get_contents($api_base.'a=artist_info'));
+				$soctokens=explode("\n", $socdata);
+				for ($p=0;$p<count($soctokens);$p++){
 					
-					echo ') '.htmlspecialchars($hlartists[$art]['infos']);
-					
-				}
-			}
-			else if ($_GET['a']==$art){
-				echo '<hr/> <a href="'.$hook_base.'">All artists</a> &gt; <span style="text-decoration:underline;">'.htmlspecialchars($art).'</span> ';
-				if (array_key_exists($art, $hlartists)){
-					echo '(';
-					echo htmlspecialchars(str_replace(' ', ', ', trim($hlartists[$art]['styles'])));
-					
-					echo ') '.htmlspecialchars($hlartists[$art]['infos']);
-					//Here comes the listing of albums for this artist
-					echo '<br/>Albums by '.htmlspecialchars($art).':<hr/>';
-					$streaming_alb=trim(file_get_contents($api_base.'a=streaming_albums&streaming_albums='.urlencode($art)));
-					$dl_alb=trim(file_get_contents($api_base.'a=download_albums&download_albums='.urlencode($art)));
-					
-					$a_str_i=explode("\n", $streaming_alb);
-					$a_dl_i=explode("\n", $dl_alb);
-					
-					
-					
-					$a_str=array_diff ($a_str_i, Array('', ' '));
-					$a_dl=array_diff ($a_dl_i, Array('', ' '));
-					
-					sort($a_str);
-					sort($a_dl);
-					if (!array_key_exists('bs', $_GET) && !array_key_exists('bd', $_GET)){
-						if (count($a_str)!=0){
-								echo 'Streaming albums: ';
-								echo ' ';				
-								foreach ($a_str as $a){
-									echo ' [';
-									
-									echo '<a href="'.$hook_base.'&a='.urlencode($art).'&bs='.urlencode($a).'">'.strip_tags($a).'</a>';
-									
-									echo '] ';
-									
-							}
-							echo '<hr/>';
-						}
-						
-						if (count($a_dl)!=0){
-									
-								echo 'Dowloadable albums: ';
-								echo ' ';				
-								foreach ($a_dl as $a){
-									echo '[';
-									
-									echo '<a href="'.$hook_base.'&a='.urlencode($art).'&bd='.urlencode($a).'">'.strip_tags($a).'</a>';
-									
-									echo '] ';
-									
-								}	
-								echo '<hr/>';
-						}
+					while ($p<count($soctokens)){
+						$socialone=Array();
+						$socialone['name']=$soctokens[$p];
+						$p++;
+						$socialone['styles']=$soctokens[$p];
+						$p++;
+						$socialone['infos']=$soctokens[$p];
+						$p++;
+						$socialone['link']=$soctokens[$p];
+						$hlartists[$socialone['name']]=$socialone;
+						$p++;
 					}
-					else {
-						if (array_key_exists('bs', $_GET) && in_array ($_GET['bs'], $a_str)){
-							echo '<a href="'.$hook_base.'&a='.urlencode($art).'">'.strip_tags($art).' Albums</a> &gt;'.strip_tags($_GET['bs']).'<br/>';
-							$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_streaming&album_streaming='.urlencode($_GET['bs']))));
-							$tracks=Array();
-							foreach ($tracklist as $tr){
-								$item=Array();
-								$item['artist']=trim(file_get_contents($api_base.'a=track_artist_streaming&track_artist_streaming='.urlencode($tr)));
-								$item['title']=trim(file_get_contents($api_base.'a=title_streaming&title_streaming='.urlencode($tr)));
-								array_push($tracks, $item);
-							}
-							echo '<ol>'; 
-							foreach ($tracks as $it){
-								echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
-								
-							}		
-							echo '</ol>';
-							echo 'Now, why not about taking a look at <a href="'.str_replace('"', '', $touch_proto.'://'.str_replace('http://', '', $label['url'])).'/?album='.urlencode($_GET['bd']).'">this album at '.htmlspecialchars($label['name']).'</a>?<hr/>';
-						}
-						else if (array_key_exists('bd', $_GET) && in_array ($_GET['bd'], $a_dl)){
-							echo '<a href="'.$hook_base.'&a='.urlencode($art).'">'.strip_tags($art).' Albums</a> &gt;'.strip_tags($_GET['bd']).'<br/>';
-							$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_download&album_download='.urlencode($_GET['bd']))));
-							$tracks=Array();
-							foreach ($tracklist as $tr){
-								$item=Array();
-								$item['artist']=trim(file_get_contents($api_base.'a=track_artist_download&track_artist_download='.urlencode($tr)));
-								$item['title']=trim(file_get_contents($api_base.'a=title_download&title_download='.urlencode($tr)));
-								array_push($tracks, $item);
-							}
-							echo '<ol>'; 
-							foreach ($tracks as $it){
-								echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
-								
-							}		
-							echo '</ol>';
-							echo 'Now, why not about taking a look at <a href="'.str_replace('"', '', $touch_proto.'://'.str_replace('http://', '', $label['url'])).'/?album='.urlencode($_GET['bd']).'">this album at '.htmlspecialchars($label['name']).'</a>?<hr/>';
-						
-						}
-						
-						
-					}
-					
 				}
+			
 				
-			}
-		}
-		
+				
+				
+				
+				
+				
+				$a_art=explode("\n", $artlist);
+				foreach ($a_art as $art){
+					
+					if (!isset($_GET['a'])){
+						echo '<hr/> <a href="'.$hook_base.'&a='.urlencode($art).'">'.htmlspecialchars($art).'</a> ';
+						if (array_key_exists($art, $hlartists)){
+							echo '(';
+							echo htmlspecialchars(str_replace(' ', ', ', trim($hlartists[$art]['styles'])));
+							
+							echo ') '.htmlspecialchars($hlartists[$art]['infos']);
+							
+						}
+					}
+					else if ($_GET['a']==$art){
+						echo '<hr/> <a href="'.$hook_base.'">All artists</a> &gt; <span style="text-decoration:underline;">'.htmlspecialchars($art).'</span> ';
+						if (array_key_exists($art, $hlartists)){
+							echo '(';
+							echo htmlspecialchars(str_replace(' ', ', ', trim($hlartists[$art]['styles'])));
+							
+							echo ') '.htmlspecialchars($hlartists[$art]['infos']);
+							//Here comes the listing of albums for this artist
+							echo '<br/>Albums by '.htmlspecialchars($art).':<hr/>';
+							$streaming_alb=file_get_contents($api_base.'a=streaming_albums&streaming_albums='.urlencode($art));
+							$dl_alb=file_get_contents($api_base.'a=download_albums&download_albums='.urlencode($art));
+							
+							if (false===$streaming_alb){$streaming_alb='';}
+							if (false===$dl_alb){$dl_alb='';}
+							
+							
+							while(strstr($streaming_alb, "\n\n") || strstr($dl_alb, "\n\n")) {	
+								str_replace("\n\n", "\n", $streaming_alb);
+								str_replace("\n\n", "\n", $dl_alb);
+							}
+							
+							$a_str=explode("\n", $streaming_alb);
+							$a_dl=explode("\n", $dl_alb);
+							
+							
+							
+							
+							//sort($a_str);
+							//sort($a_dl);
+							if (!array_key_exists('bs', $_GET) && !array_key_exists('bd', $_GET)){
+								if (count($a_str)!==0&&$a_str[0]!=''){
+										echo 'Streaming albums: ';
+										echo ' ';				
+										for ($i=0;$i<count($a_str);$i++){
+											$a=$a_str[$i];
+											if ($a!=''){
+										
+												echo ' [';
+												
+												echo '<a href="'.$hook_base.'&a='.urlencode($art).'&bs='.urlencode($a).'">'.strip_tags($a).'</a>';
+												
+												echo '] ';
+											}	
+									}
+									echo '<hr/>';
+								}
+								
+								if (count($a_dl)!==0&&$a_dl[0]!=''){
+											
+										echo 'Dowloadable albums: ';
+										echo ' ';				
+										for ($i=0;$i<count($a_dl);$i++){
+											$a=$a_dl[$i];
+											if ($a!=''){
+												echo '[';
+												
+												echo '<a href="'.$hook_base.'&a='.urlencode($art).'&bd='.urlencode($a).'">'.strip_tags($a).'</a>';
+												
+												echo '] ';
+											}
+										}	
+										echo '<hr/>';
+								}
+							}
+							else {
+								if (array_key_exists('bs', $_GET) && in_array ($_GET['bs'], $a_str)){
+									echo '<a href="'.$hook_base.'&a='.urlencode($art).'">'.strip_tags($art).' Albums</a> &gt;'.strip_tags($_GET['bs']).'<br/>';
+									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_streaming&album_streaming='.urlencode($_GET['bs']))));
+									$tracks=Array();
+									foreach ($tracklist as $tr){
+										$item=Array();
+										$item['artist']=trim(file_get_contents($api_base.'a=track_artist_streaming&track_artist_streaming='.urlencode($tr)));
+										$item['title']=trim(file_get_contents($api_base.'a=title_streaming&title_streaming='.urlencode($tr)));
+										array_push($tracks, $item);
+									}
+									echo '<ol>'; 
+									foreach ($tracks as $it){
+										echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
+										
+									}		
+									echo '</ol>';
+									echo 'Now, why not about taking a look at <a href="'.str_replace('"', '', $touch_proto.'://'.str_replace('http://', '', $label['url'])).'/?album='.urlencode($_GET['bd']).'">this album at '.htmlspecialchars($label['name']).'</a>?<hr/>';
+								}
+								else if (array_key_exists('bd', $_GET) && in_array ($_GET['bd'], $a_dl)){
+									echo '<a href="'.$hook_base.'&a='.urlencode($art).'">'.strip_tags($art).' Albums</a> &gt;'.strip_tags($_GET['bd']).'<br/>';
+									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_download&album_download='.urlencode($_GET['bd']))));
+									$tracks=Array();
+									foreach ($tracklist as $tr){
+										$item=Array();
+										$item['artist']=trim(file_get_contents($api_base.'a=track_artist_download&track_artist_download='.urlencode($tr)));
+										$item['title']=trim(file_get_contents($api_base.'a=title_download&title_download='.urlencode($tr)));
+										array_push($tracks, $item);
+									}
+									echo '<ol>'; 
+									foreach ($tracks as $it){
+										echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
+										
+									}		
+									echo '</ol>';
+									echo 'Now, why not about taking a look at <a href="'.str_replace('"', '', $touch_proto.'://'.str_replace('http://', '', $label['url'])).'/?album='.urlencode($_GET['bd']).'">this album at '.htmlspecialchars($label['name']).'</a>?<hr/>';
+								
+								}
+								
+								
+							}
+							
+						}
+						
+					}
+				}
+			}//here ends the available on both side API version 1-required commands
+				
+		}//If available_on_both_sides_api_versions
 		
 		
 		

@@ -1,12 +1,19 @@
 <?php
+require_once('../crero-yp-config.php');
 error_reporting(0);
 
 
 
 
 if (!(isset($_GET['url'])&&isset($_GET['name'])&&isset($_GET['description']))){
+	//this is a void, parameterless, then invalid API call. Then we will redirect the -maybe human- requester to the homepage of this crero-yp instance 
+	$redirect_proto='http';
 	
-	die();
+	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!==''){
+		$redirect_proto='https';
+	}
+	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].str_replace('/yp/index.php', '/yp.php', $_SERVER['PHP_SELF']), true, 302);
+	exit(0);
 }
 $url=$_GET['url'];
 $name=$_GET['name'];
@@ -49,8 +56,23 @@ if (array_key_exists('forceHTTPS', $_GET)){
 	$iexist['forceHTTPS']=boolval($_GET['forceHTTPS']);
 }
 
-file_put_contents('./d/'.$iexisttouch, serialize($iexist));
+$result=0;
+if (file_put_contents('./d/'.$iexisttouch, serialize($iexist))){
+	
+	$result=1;
 
+
+}
+//It's time to reply to the requesting CreRo
+//Currently valid replies can be (order matters)
+// "0 HTTP public", "0 HTTP private", "0 HTTPS public", "0 HTTPS private", "1 HTTP public", "1 HTTP private", "1 HTTPS public", "1 HTTPS private"
+// The first 0 or 1 token indicates if the ping was successfully saved on disk. 0 is success. Otherwise this is a failure. 
+// The two tokens following indicates how should this YP server be (or not be) displayed by the requesting CreRo instance. Please refer to crero-yp-config.php for information and setting for these options
+
+header('Content-Type: text/plain; charset=urf-8');
+
+echo $yp_api_force_https?'HTTPS ':'HTTP ';
+echo $yp_api_listing;
 
 
 
