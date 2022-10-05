@@ -1,4 +1,6 @@
 <?php
+class SystemExit extends Exception {}
+try{
 require_once('../crero-yp-config.php');
 error_reporting(0);
 
@@ -13,7 +15,7 @@ if (!(isset($_GET['url'])&&isset($_GET['name'])&&isset($_GET['description']))){
 		$redirect_proto='https';
 	}
 	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].str_replace('/yp/index.php', '/yp.php', $_SERVER['PHP_SELF']), true, 302);
-	exit(0);
+	throw new SystemExit();
 }
 $url=$_GET['url'];
 $name=$_GET['name'];
@@ -31,7 +33,7 @@ foreach ($touchs as $touch){
 }	
 foreach ($touchs as $touch){
 	$label=unserialize(file_get_contents('./d/'.$touch));
-	if ($label['url']===$url&&$label['name']===$name){
+	if ($label['url']==$url){
 		$iexist=$label;
 		$iexisttouch=$touch;
 		
@@ -58,10 +60,10 @@ if (array_key_exists('forceHTTPS', $_GET)){
 
 $result=0;
 $sda=serialize($iexist);
-if (false===$sda){
+if ($sda===false){
 	$result=1;
 }
-if ($sda!==false&&!file_put_contents('./d/'.$iexisttouch, $sda)){
+else if (file_put_contents('./d/'.$iexisttouch, $sda)===false){
 	$result=1;
 }
 //It's time to reply to the requesting CreRo
@@ -72,13 +74,8 @@ if ($sda!==false&&!file_put_contents('./d/'.$iexisttouch, $sda)){
 
 header('Content-Type: text/plain; charset=utf-8');
 echo $result.' ';
-if ($yp_api_force_https)
-	echo 'HTTPS ';
-	else echo 'HTTP ';
+echo $yp_api_force_https?'HTTPS ':'HTTP ';
 echo $yp_api_listing;
-
-
-exit(0);
-
-
+}
+catch (SystemExit $e) { }
 ?>
