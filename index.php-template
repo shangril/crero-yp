@@ -59,12 +59,19 @@ if (array_key_exists('forceHTTPS', $_GET)){
 }
 
 $result=0;
-$sda=serialize($iexist);
-if ($sda===false){
+
+if (strpos($url, 'http://')!==intval(0)){
 	$result=1;
 }
-else if (file_put_contents('./d/'.$iexisttouch, $sda)===false){
-	$result=1;
+else {
+
+	$sda=serialize($iexist);
+	if ($sda===false){
+		$result=1;
+	}
+	else if (file_put_contents('./d/'.$iexisttouch, $sda)===false){
+		$result=1;
+	}
 }
 //It's time to reply to the requesting CreRo
 //Currently valid replies can be (order matters)
