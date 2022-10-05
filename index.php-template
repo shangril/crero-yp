@@ -70,7 +70,7 @@ if (file_put_contents('./d/'.$iexisttouch, serialize($iexist))){
 // The two tokens following indicates how should this YP server be (or not be) displayed by the requesting CreRo instance. Please refer to crero-yp-config.php for information and setting for these options
 
 header('Content-Type: text/plain; charset=urf-8');
-
+echo $result.' ';
 echo $yp_api_force_https?'HTTPS ':'HTTP ';
 echo $yp_api_listing;
 
