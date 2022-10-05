@@ -57,11 +57,12 @@ if (array_key_exists('forceHTTPS', $_GET)){
 }
 
 $result=0;
-if (file_put_contents('./d/'.$iexisttouch, serialize($iexist))){
-	
+$sda=serialize($iexist);
+if (false===$sda){
 	$result=1;
-
-
+}
+if ($sda!==false&&!file_put_contents('./d/'.$iexisttouch, $sda)){
+	$result=1;
 }
 //It's time to reply to the requesting CreRo
 //Currently valid replies can be (order matters)
@@ -71,11 +72,13 @@ if (file_put_contents('./d/'.$iexisttouch, serialize($iexist))){
 
 header('Content-Type: text/plain; charset=utf-8');
 echo $result.' ';
-echo $yp_api_force_https?'HTTPS ':'HTTP ';
+if ($yp_api_force_https)
+	echo 'HTTPS ';
+	else echo 'HTTP ';
 echo $yp_api_listing;
 
 
-
+exit(0);
 
 
 ?>

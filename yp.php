@@ -36,7 +36,7 @@ $available_on_both_side_api_versions=Array();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="charset" content="utf-8" />
 
-<meta name="description" content="<?php echo htmlentities($site);?> Yellowpage of artists, labels and webradios that are using the CreRo CMS to propel their website"/>
+<meta name="description" content="<?php echo htmlentities($site);?> Yellowpage of netlabels and labels using the CreRo CMS to propel their website"/>
 <style>
 body {
 	font-family: Tahoma, Sans-serif;
@@ -101,7 +101,7 @@ h1 {
 	if (isset($header)){include ($header);}
 ?>
 </div><br style="clear:both;"/>	
-<h1 style="text-align:center;"><?php echo htmlentities($site);?><br/><span style="font-size:68%;">CreRo-propelled label &amp; radio sites yellowpages</span></h1>
+<h1 style="text-align:center;"><?php echo htmlentities($site);?><br/><span style="font-size:68%;">Label &amp; Netlabels CreRo-enabled sites yellowpages</span></h1>
 Here's a live yellowpage of CreRo-powered label, artist, or webradio websites :<hr/>  
 <?php
 $touchs=array_diff(scandir ('./yp/d'), array ('.', '..', '.htaccess'));
