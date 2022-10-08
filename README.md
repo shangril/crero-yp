@@ -33,6 +33,8 @@ Note the following :
 * If the server serves both http and https as well it will work fine
 * But if the server is available in https but fails to redirect or serve http, crero-yp will fallback to provide a non-working http link to users, and will be unable to communicate with the Crero YP API to fetch useful informations like artist list, albums names and so on. 
 
+Note : in the case 4) (the worst) it is possible to workaround this by enabling YPForceHTTPS in the CreRo server. See section "Requirement for CreRo instance to be listed in a yp server". 
+
 ### A very secondary point
 By default yp.php will include a link named after the "site" variable of config.php that will point to the index file in the same directory, on top of pages. 
 
@@ -49,6 +51,10 @@ The following admin panel option must mandatory be set for your CreRo instance t
 The following setting is a good idea:
 
 * Install a png image named favicon.png at the root of your Crero install. Firstly, you'll have a favicon, helping people to identify your site visually in their (maybe numerous) opened browser tab, in their bookmarks, history, and so on. Secondly, this label logo will be displayed for your entry in the yp service, which also helps identifying your label. Thirdly, your label will have a logo on its pages, and if it has a radio, will display this logo instead of a blank "broken image" square when the radio plays a title that hasn't a cover art linked ot its album. 
+
+##### Trouble with misconfigured https hosts
+Please read the above "Basic https thing scenario" section to understand a bit, firstly. 
+If your CreRo instance falls into point 4) (misconfigured HTTPS), you have no other choice that to set in Crero admin panel the YPForceHTTPS option to get a working directory listing. 
 
 #### The question of advanced information
 
