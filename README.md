@@ -1,7 +1,7 @@
 # crero-yp
 A simple CMS to run a YellowPage service listing music label websites using CreRo CMS. See https://crero.clewn.org for more information about CreRo. 
 
-See crero-yp working at https://clewn.org/yp.php
+See crero-yp working at https://clewn.org/yp/ ! You can also add this address to your CreRo instance in the "creroyservices" to get your CreRo advertised on this YP server. 
 
 ## Server configuration security notice
 
