@@ -316,8 +316,8 @@ foreach ($touchs as $touch){
 							
 							
 							while(strstr($streaming_alb, "\n\n") || strstr($dl_alb, "\n\n")) {	
-								str_replace("\n\n", "\n", $streaming_alb);
-								str_replace("\n\n", "\n", $dl_alb);
+								$streaming_alb=str_replace("\n\n", "\n", $streaming_alb);
+								$dl_alb=str_replace("\n\n", "\n", $dl_alb);
 							}
 							
 							$a_str=explode("\n", $streaming_alb);
