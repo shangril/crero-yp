@@ -56,7 +56,7 @@ if ($get_param_counter>0){
 	
 	$anch = parse_url($redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$_SERVER['QUERY_STRING'], PHP_URL_FRAGMENT);
 	if (isset($anch)&&$anch!==false&&$anch!=''){
-		$querystring.='#'.urlencode($anch);
+		$querystring.='#'.$anch;
 	}
 	
 	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$querystring, true, 302);
