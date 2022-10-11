@@ -9,9 +9,15 @@ $footer=null; //can be null ; or can be a string containing a relative path of a
 
 //Completely optional header_fixed option. Can be =true; or =false; default being =false;
 //if set to true, the optional header inserted with $header option will have its CSS attribut to Fixed, that is to say that il will remain on top of screen even
-//when the user will scroll down the page. If this is your choise, make sure that your header size, in pixels, does not exceed 150px or a little more ; please test with a reduced viewport
+//when the user will scroll down the page ON THE HOMEPAGE ONLY (not on possible subsections of the site, as, as an example, additionnal information about a particular label, if available).
+//If this is your choise, make sure that your header size, in pixels, does not exceed 150px or a little more ; please test with a reduced viewport
 //That is to say a window size not much large, as the width of those from mobile phone as an example, to check that your header doesn't overlays the beginning of the page content.  
-//cannot bel null
+
+//This will apply on the homepage only - on subsections, the header will be present, but on top on the page, and not fixed, which means that when scrolling it will not remain omnipresent on screen
+//This is whishable, because subsesction will automatically scroll down with #anchor HTML feature set to have the user straight directed to what is new and requested
+//It was a concern for mobile user ; the displaying of an non-#anchor page, with the page reloading, displaying its top, and new things requiring to scroll down
+//was counter-intuitive, mobile user may have thought that they found a bug and that their request displayed nothing. 
+//cannot be null
 
 $header_fixed=false;
 
