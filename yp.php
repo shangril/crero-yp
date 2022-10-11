@@ -1,4 +1,6 @@
 <?php
+class SystemExit extends Exception {}
+try {
 require_once('./crero-yp-config.php');
 //starting for now, we do not want any PHP warning, since we may have to set a redirection header later in the code
 error_reporting(0);
@@ -34,8 +36,22 @@ $footer_needs_to_be_pushed_down=false; //same as previous bool comment
 $get_param_counter = count(array_diff(array_keys($_GET), $get_param_whitelist));
 if ($get_param_counter>0){
 	//uh we got a non-whilisted $_GET parameter
-	//TODO : add a redirection to the proper canonical url and trash GAFAM tracking HTTP GET that propagate from share to share to identify the original sharer and who is in relationnal network
+	//DONE : add a redirection to the proper canonical url and trash GAFAM tracking HTTP GET params that propagate from share to share to identify the original sharer and who is in relationnal network
 	//f**** b****ds
+	
+	$redirect_proto='http';
+	$querystring='?';
+	
+	foreach ($get_param_whitelist as $prm){
+		$querystring.=urlencode($prm).'='.urlencode($_GET[$prm]).'&';
+	}
+	$querystring=substr($querystring, 0, strlen($querystring)-1);
+	
+	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!==''){
+		$redirect_proto='https';
+	}
+	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$querystring, true, 302);
+	throw new SystemExit();
 	
 } 
 else if (count(array_keys($_GET))>0){
@@ -506,4 +522,6 @@ Propelled by crero-yp, an AGPL cms for CreRo yellopages services. Code repo is <
 	
 	?>"/>
 </body>
-</html>
+</html><?php }//end of general try{} block
+
+catch (SystemExit $e) {/*terminates the script cleanly on demanding CGI*/ }
