@@ -43,13 +43,22 @@ if ($get_param_counter>0){
 	$querystring='?';
 	
 	foreach ($get_param_whitelist as $prm){
-		$querystring.=urlencode($prm).'='.urlencode($_GET[$prm]).'&';
+	
+		if (in_array($prm, array_keys($_GET))){
+			$querystring.=urlencode($prm).'='.urlencode($_GET[$prm]).'&';
+		}
 	}
 	$querystring=substr($querystring, 0, strlen($querystring)-1);
 	
 	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!==''){
 		$redirect_proto='https';
 	}
+	
+	$anch = parse_url($redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$_SERVER['QUERY_STRING'], PHP_URL_FRAGMENT);
+	if (isset($anch)&&$anch!==false&&!$anch!==''){
+		$querystring.='#'.urlencode($anch);
+	}
+	
 	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$querystring, true, 302);
 	throw new SystemExit();
 	
