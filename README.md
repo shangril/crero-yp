@@ -3,6 +3,12 @@ A simple CMS to run a YellowPage service listing music label websites using CreR
 
 See crero-yp working at https://clewn.org/yp/ ! You can also add this address to your CreRo instance in the "creroyservices" to get your CreRo advertised on this YP server. 
 
+## note on 20221021 update
+Starting with this update, crero-yp will no longer expect htmlentites-encoded data from <crero instance>/crero-yp-api. 
+
+The move to non htmlentities for CreRo will happen for its 2022102X version (X is a number since to determinate). Crero owners, remember to purge your ./crero-yp-api-cache from any .dat files once you will have upgraded to 2022102X). 
+
+
 ## Server configuration security notice
 
 Some parts of the scripts here rely on $_SERVER PHP superglobal's SERVER_NAME field to redirect void, parameterless calls to API to yp.php which is the human-targeted readable homepage. Make sure that your web server is passing correctly SERVER_NAME as set in your server's vhost configuration, and not rely on browser-provided server name data, which would be a security risk. As an example, on Apache >= 2, the correct behavior is achieved by setting UseCanonicalName = On and set ServerName to the proper name of your sever in your vhost configuratin (see "site-available", "site-enabled", in /etc/apache2, and the a2ensite and a2dissite utilites). 
