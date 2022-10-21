@@ -19,7 +19,7 @@ else if (!is_dir('./yp/d')) {
 	exit(1);
 }
 
-if (file_exists('./index.php-template')&&(!file_exists('./yp/index.php' || filemtime('./index.php-template')>filemtime('./yp/index.php')))){
+if (file_exists('./index.php-template')&&(!file_exists('./yp/index.php' || filectime('./index.php-template')>filectime('./yp/index.php')))){
 	file_put_contents('./yp/index.php', file_get_contents('./index.php-template'));
 	
 }
@@ -422,7 +422,7 @@ foreach ($touchs as $touch){
 										
 												echo '';
 												
-												echo '<a name="as" href="'.$hook_base.'&a='.urlencode($art).'&bs='.urlencode($a).'#bs">'.strip_tags($a).'</a>';
+												echo '<a name="as" href="'.$hook_base.'&a='.urlencode($art).'&bs='.urlencode($a).'#bs">'.htmlspecialchars($a).'</a>';
 												
 												echo '<hr/>';
 											}	
@@ -439,7 +439,7 @@ foreach ($touchs as $touch){
 											if ($a!=''){
 												echo '';
 												
-												echo '<a name="ad" href="'.$hook_base.'&a='.urlencode($art).'&bd='.urlencode($a).'#bd">'.strip_tags($a).'</a>';
+												echo '<a name="ad" href="'.$hook_base.'&a='.urlencode($art).'&bd='.urlencode($a).'#bd">'.htmlspecialchars($a).'</a>';
 												
 												echo '<hr/>';
 											}
@@ -449,7 +449,7 @@ foreach ($touchs as $touch){
 							}
 							else {
 								if (array_key_exists('bs', $_GET) && in_array ($_GET['bs'], $a_str)){
-									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.strip_tags($art).' </a>'.' &gt; <a name="bs">Albums</a> &gt; '.strip_tags($_GET['bs']).'<br/>';
+									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.htmlspecialchars($art).' </a>'.' &gt; <a name="bs">Albums</a> &gt; '.htmlspecialchars($_GET['bs']).'<br/>';
 									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_streaming&album_streaming='.urlencode($_GET['bs']))));
 									$tracks=Array();
 									foreach ($tracklist as $tr){
@@ -460,14 +460,14 @@ foreach ($touchs as $touch){
 									}
 									echo '<ol>'; 
 									foreach ($tracks as $it){
-										echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
+										echo '<li>'.htmlspecialchars($it['artist']).' - '.htmlspecialchars($it['title']).'</li>';
 										
 									}		
 									echo '</ol>';
 									echo 'Now, why not about taking a look at <a href="'.str_replace('"', '', $touch_proto.'://'.str_replace('http://', '', $label['url'])).'/?album='.urlencode($_GET['bs']).'">this album at '.htmlspecialchars($label['name']).'</a>?<hr/>';
 								}
 								else if (array_key_exists('bd', $_GET) && in_array ($_GET['bd'], $a_dl)){
-									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.strip_tags($art).' </a>'.' &gt; <a name="bd"> Albums</a> &gt; '.strip_tags($_GET['bd']).'<br/>';
+									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.htmlspecialchars($art).' </a>'.' &gt; <a name="bd"> Albums</a> &gt; '.htmlspecialchars($_GET['bd']).'<br/>';
 									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_download&album_download='.urlencode($_GET['bd']))));
 									$tracks=Array();
 									foreach ($tracklist as $tr){
@@ -478,7 +478,7 @@ foreach ($touchs as $touch){
 									}
 									echo '<ol>'; 
 									foreach ($tracks as $it){
-										echo '<li>'.strip_tags($it['artist']).' - '.strip_tags($it['title']).'</li>';
+										echo '<li>'.htmlspecialchars($it['artist']).' - '.htmlspecialchars($it['title']).'</li>';
 										
 									}		
 									echo '</ol>';
