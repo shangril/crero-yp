@@ -1,5 +1,22 @@
 <?php
 class SystemExit extends Exception {}
+
+function crero_yp_text_file_get_contents($url)
+	{
+	$content = file_get_contents($url);
+	if (isset($http_response_header)) //should always happen
+		{
+			if (in_array('Content-Type: text/plain; charset=utf-8', $http_response_header)){
+				//we got a text api reply, whatever can it be, and we want to display it
+				return $content;
+			}
+		}
+	//something went wrong on the CreRo instance
+	return 'This CreRo instance hasn\'t replied';
+		
+	
+}
+
 try {
 require_once('./crero-yp-config.php');
 //starting for now, we do not want any PHP warning, since we may have to set a redirection header later in the code
@@ -224,7 +241,7 @@ foreach ($touchs as $touch){
 		
 		//*********** Here comes the API part
 
-		$remote_api_version=file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
+		$remote_api_version=crero_yp_text_file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
 		$remote_provided_api_versions=explode(' ', $remote_api_version);
 		$available_on_both_side_api_versions=array_intersect($supported_api_versions, $remote_provided_api_versions);
 		
@@ -262,7 +279,7 @@ foreach ($touchs as $touch){
 			
 		}
 		//*********** Here comes the API part
-		$remote_api_version=file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
+		$remote_api_version=crero_yp_text_file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
 		$remote_provided_api_versions=explode(' ', $remote_api_version);
 		$available_on_both_side_api_versions=array_intersect($supported_api_versions, $remote_provided_api_versions);
 		
@@ -318,7 +335,7 @@ foreach ($touchs as $touch){
 			///here starts the API Version 1-required queries
 			if (in_array('1', $available_on_both_side_api_versions)){
 				if (true){
-					echo '<em>General styles:</em> '.htmlspecialchars(str_replace(' ', ', ', trim(file_get_contents($api_base.'a=styles')))).'<br/>';
+					echo '<em>General styles:</em> '.htmlspecialchars(str_replace(' ', ', ', trim(crero_yp_text_file_get_contents($api_base.'a=styles')))).'<br/>';
 					
 				}
 				else {
@@ -328,13 +345,13 @@ foreach ($touchs as $touch){
 				
 				$artlist='';
 				
-				if(trim(file_get_contents($api_base.'a=list_artists'))!=''){
-					$artlist=trim(file_get_contents($api_base.'a=list_artists'));
+				if(trim(crero_yp_text_file_get_contents($api_base.'a=list_artists'))!=''){
+					$artlist=trim(crero_yp_text_file_get_contents($api_base.'a=list_artists'));
 					}
 					else	{
 						//no artist declared by the label, fallback to list_all_artists (likely a playlist webradio item)
-						if (trim(file_get_contents($apibase.'a=list_all_artists'))!=''){
-							$artlist=file_get_contents($api_base.'a=list_all_artists');
+						if (trim(crero_yp_text_file_get_contents($apibase.'a=list_all_artists'))!=''){
+							$artlist=crero_yp_text_file_get_contents($api_base.'a=list_all_artists');
 						}
 						
 					} 
@@ -344,17 +361,31 @@ foreach ($touchs as $touch){
 				}
 				
 				$hlartists=Array();
-				$socdata=trim(file_get_contents($api_base.'a=artist_info'));
+				$socdata=trim(crero_yp_text_file_get_contents($api_base.'a=artist_info'));
 				$soctokens=explode("\n", $socdata);
 				for ($p=0;$p<count($soctokens);$p++){
 					
 					while ($p<count($soctokens)){
 						$socialone=Array();
-						$socialone['name']=$soctokens[$p];
+						$socialone['name']='';
+						$socialone['styles']='';
+						$socialone['infos']='';
+						$socialone['link']='';
+						
+						if (array_key_exists($p, $soctokens))
+							{
+							$socialone['name']=$soctokens[$p];
+							}
 						$p++;
-						$socialone['styles']=$soctokens[$p];
+						if (array_key_exists($p, $soctokens))
+							{
+							$socialone['styles']=$soctokens[$p];
+							}
 						$p++;
-						$socialone['infos']=$soctokens[$p];
+						if (array_key_exists($p, $soctokens))
+							{
+							$socialone['infos']=$soctokens[$p];
+							}	
 						$p++;
 						if (array_key_exists($p, $soctokens)){
 							$socialone['link']=$soctokens[$p];
@@ -392,8 +423,8 @@ foreach ($touchs as $touch){
 							echo ') '.htmlspecialchars($hlartists[$art]['infos']);
 							//Here comes the listing of albums for this artist
 							echo '<br/>Albums by '.htmlspecialchars($art).':<hr/>';
-							$streaming_alb=file_get_contents($api_base.'a=streaming_albums&streaming_albums='.urlencode($art));
-							$dl_alb=file_get_contents($api_base.'a=download_albums&download_albums='.urlencode($art));
+							$streaming_alb=crero_yp_text_file_get_contents($api_base.'a=streaming_albums&streaming_albums='.urlencode($art));
+							$dl_alb=crero_yp_text_file_get_contents($api_base.'a=download_albums&download_albums='.urlencode($art));
 							
 							if (false===$streaming_alb){$streaming_alb='';}
 							if (false===$dl_alb){$dl_alb='';}
@@ -450,12 +481,12 @@ foreach ($touchs as $touch){
 							else {
 								if (array_key_exists('bs', $_GET) && in_array ($_GET['bs'], $a_str)){
 									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.htmlspecialchars($art).' </a>'.' &gt; <a name="bs">Albums</a> &gt; '.htmlspecialchars($_GET['bs']).'<br/>';
-									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_streaming&album_streaming='.urlencode($_GET['bs']))));
+									$tracklist=explode("\n", trim(crero_yp_text_file_get_contents($api_base.'a=album_streaming&album_streaming='.urlencode($_GET['bs']))));
 									$tracks=Array();
 									foreach ($tracklist as $tr){
 										$item=Array();
-										$item['artist']=trim(file_get_contents($api_base.'a=track_artist_streaming&track_artist_streaming='.urlencode($tr)));
-										$item['title']=trim(file_get_contents($api_base.'a=title_streaming&title_streaming='.urlencode($tr)));
+										$item['artist']=trim(crero_yp_text_file_get_contents($api_base.'a=track_artist_streaming&track_artist_streaming='.urlencode($tr)));
+										$item['title']=trim(crero_yp_text_file_get_contents($api_base.'a=title_streaming&title_streaming='.urlencode($tr)));
 										array_push($tracks, $item);
 									}
 									echo '<ol>'; 
@@ -468,12 +499,12 @@ foreach ($touchs as $touch){
 								}
 								else if (array_key_exists('bd', $_GET) && in_array ($_GET['bd'], $a_dl)){
 									echo '<a name="a" href="'.$hook_base.'#m">'.htmlspecialchars($label['name']).'</a> &gt; <a name="a" href="'.$hook_base.'#aall">All artists</a> &gt; <a href="'.$hook_base.'&a='.urlencode($art).'#a">'.htmlspecialchars($art).' </a>'.' &gt; <a name="bd"> Albums</a> &gt; '.htmlspecialchars($_GET['bd']).'<br/>';
-									$tracklist=explode("\n", trim(file_get_contents($api_base.'a=album_download&album_download='.urlencode($_GET['bd']))));
+									$tracklist=explode("\n", trim(crero_yp_text_file_get_contents($api_base.'a=album_download&album_download='.urlencode($_GET['bd']))));
 									$tracks=Array();
 									foreach ($tracklist as $tr){
 										$item=Array();
-										$item['artist']=trim(file_get_contents($api_base.'a=track_artist_download&track_artist_download='.urlencode($tr)));
-										$item['title']=trim(file_get_contents($api_base.'a=title_download&title_download='.urlencode($tr)));
+										$item['artist']=trim(crero_yp_text_file_get_contents($api_base.'a=track_artist_download&track_artist_download='.urlencode($tr)));
+										$item['title']=trim(crero_yp_text_file_get_contents($api_base.'a=title_download&title_download='.urlencode($tr)));
 										array_push($tracks, $item);
 									}
 									echo '<ol>'; 
