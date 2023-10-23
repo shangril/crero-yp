@@ -1,4 +1,16 @@
 <?php
+if (file_exists('./.timestamp')&&!is_dir('./.timestamp')){
+	$tss=file_get_contents('./.timestamp');
+	if ($tss!==false){
+		$ts=unserialize($tss);
+		
+		if ((floatval($ts)-microtime(true))<4){
+			sleep(4);
+		}
+		
+	}
+}
+
 class SystemExit extends Exception {}
 
 function crero_yp_text_file_get_contents($url)
@@ -565,3 +577,5 @@ Propelled by crero-yp, an AGPL cms for CreRo yellopages services. Code repo is <
 </html><?php }//end of general try{} block
 
 catch (SystemExit $e) {/*terminates the script cleanly on demanding CGI*/ }
+file_put_contents('./.timestamp', serialize(microtime(true)));
+
