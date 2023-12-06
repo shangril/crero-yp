@@ -104,9 +104,6 @@ if ($get_param_counter>0){
 		$redirect_proto='https';
 	}
 	
-//DELETE THIS
-//PAAAAATCH
-$isHyped = '[fc71:fa3a:414d:fe82:f465:369b:141a:f8c]';
 
 	if (isset($isHyped)){
 		$server_name=$isHyped;
