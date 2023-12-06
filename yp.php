@@ -15,12 +15,33 @@ class SystemExit extends Exception {}
 
 function crero_yp_text_file_get_contents($url)
 	{
-	$content = file_get_contents($url);
-	if (isset($http_response_header)) //should always happen
+	//return file_get_contents($url);
+	$context = stream_context_create(
+ 	    [
+	        'http' => array(
+	            'method' => 'GET',
+		    'header' => 'User-Agent: crero-yp\r\n'
+	        )
+	    ]
+	);
+
+
+	$headers=array();
+	$content=file_get_contents($url, false, $context);
+
+	if (is_array($http_response_header)){
+		$a = new ArrayObject($http_response_header);
+		$headers=$a->getArrayCopy();
+	}
+
+	if (is_array($headers)) //likely, should always happen
 		{
-			if (in_array('Content-Type: text/plain; charset=utf-8', $http_response_header)){
+			
+			if (in_array('Content-Type: text/plain; charset=utf-8', $headers, true)){
 				//we got a text api reply, whatever can it be, and we want to display it
 				return $content;
+			
+
 			}
 		}
 	//something went wrong on the CreRo instance
@@ -79,16 +100,27 @@ if ($get_param_counter>0){
 	}
 	$querystring=substr($querystring, 0, strlen($querystring)-1);
 	
-	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!==''){
+	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']!==''){
 		$redirect_proto='https';
 	}
 	
-	$anch = parse_url($redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$_SERVER['QUERY_STRING'], PHP_URL_FRAGMENT);
+//DELETE THIS
+//PAAAAATCH
+$isHyped = '[fc71:fa3a:414d:fe82:f465:369b:141a:f8c]';
+
+	if (isset($isHyped)){
+		$server_name=$isHyped;
+	}
+	else{
+		$server_name=$_SERVER['SERVER_NAME'];
+	}
+
+	$anch = parse_url($redirect_proto.'://'.$server_name.$_SERVER['PHP_SELF'].$_SERVER['QUERY_STRING'], PHP_URL_FRAGMENT);
 	if (isset($anch)&&$anch!==false&&$anch!=''){
 		$querystring.='#'.$anch;
 	}
 	
-	header("Location: ".$redirect_proto.'://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].$querystring, true, 302);
+	header("Location: ".$redirect_proto.'://'.$server_name.['SERVER_NAME'].$_SERVER['PHP_SELF'].$querystring, true, 302);
 	throw new SystemExit();
 	
 } 
@@ -227,14 +259,27 @@ foreach ($touchs as $touch){
 		
 		
 		if (array_key_exists('protoHTTPS', $label)){
-			if (boolval($label['protoHTTPS'])===true||(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true)){
+			if ((boolval($label['protoHTTPS'])===true or (array_key_exists('forceHTTPS', $label) and boolval($label['forceHTTPS'])===true))){
 				$touch_proto='https';
 			}
 			
 		}
-		
+
+
+//dec 6 2023 patch		
 		echo '<span class="label-wrapper">';
 		echo '<span >';
+		
+		//lastly, display maybe some warnings
+		if ($touch_proto=='http'){echo 'unencrypted ';}
+//ends Dec 6 2023 patch		
+		
+
+
+
+
+		//echo '<span class="label-wrapper">';
+		//echo '<span >';
 		
 		
 		
@@ -285,11 +330,13 @@ foreach ($touchs as $touch){
 		
 		
 		if (array_key_exists('protoHTTPS', $label)){
-			if (boolval($label['protoHTTPS'])===true||(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true)){
+			if (boolval($label['protoHTTPS'])===true or ((array_key_exists('forceHTTPS', $label) and boolval($label['forceHTTPS'])===true))){
 				$touch_proto='https';
 			}
 			
 		}
+
+
 		//*********** Here comes the API part
 		$remote_api_version=crero_yp_text_file_get_contents($touch_proto.'://'.str_replace('http://', '', $label['url']).'/crero-yp-api.php?a=version');
 		$remote_provided_api_versions=explode(' ', $remote_api_version);
@@ -327,12 +374,15 @@ foreach ($touchs as $touch){
 		
 		if((!(array_key_exists('forceHTTPS', $label)&&boolval($label['forceHTTPS'])===true))||file_get_contents($label['url'].'/style.css')===file_get_contents(str_replace('http://', 'https://', $label['url']).'/style.css'))
 			{
-				$label['protoHTTPS']=true;
+				$label['protoHTTPS']=false;
+				$touch_proto='http';//patched 20231206
 			}
 			else
 			{
-				$label['protoHTTPS']=false;
+				$label['protoHTTPS']=true;//patched 20231206
 			}
+
+
 				
 		file_put_contents('./yp/d/'.$touch, serialize($label));	
 				
@@ -340,6 +390,8 @@ foreach ($touchs as $touch){
 		
 		//Here comes the crero-yp-api stuff
 		if (count($available_on_both_side_api_versions)>0){
+
+
 			$api_base=$touch_proto.'://'.str_replace('http://', '', $label['url'].'/crero-yp-api.php?');
 			$hook_base='./yp.php?m='.urlencode(str_replace('.dat', '', $touch));
 			
@@ -375,38 +427,40 @@ foreach ($touchs as $touch){
 				$hlartists=Array();
 				$socdata=trim(crero_yp_text_file_get_contents($api_base.'a=artist_info'));
 				$soctokens=explode("\n", $socdata);
-				for ($p=0;$p<count($soctokens);$p++){
+				if (count($soctokens)>0){
+
+					for ($p=0;$p<count($soctokens);$p++){
 					
-					while ($p<count($soctokens)){
-						$socialone=Array();
-						$socialone['name']='';
-						$socialone['styles']='';
-						$socialone['infos']='';
-						$socialone['link']='';
+						while ($p<count($soctokens)){
+							$socialone=Array();
+							$socialone['name']='';
+							$socialone['styles']='';
+							$socialone['infos']='';
+							$socialone['link']='';
 						
-						if (array_key_exists($p, $soctokens))
-							{
-							$socialone['name']=$soctokens[$p];
-							}
-						$p++;
-						if (array_key_exists($p, $soctokens))
-							{
-							$socialone['styles']=$soctokens[$p];
-							}
-						$p++;
-						if (array_key_exists($p, $soctokens))
-							{
+							if (array_key_exists($p, $soctokens))
+								{
+								$socialone['name']=$soctokens[$p];
+								}
+							$p++;
+							if (array_key_exists($p, $soctokens))
+								{
+								$socialone['styles']=$soctokens[$p];
+								}
+							$p++;
+							if (array_key_exists($p, $soctokens))
+								{
 							$socialone['infos']=$soctokens[$p];
-							}	
-						$p++;
-						if (array_key_exists($p, $soctokens)){
-							$socialone['link']=$soctokens[$p];
+								}	
+							$p++;
+							if (array_key_exists($p, $soctokens)){
+								$socialone['link']=$soctokens[$p];
+							}
+							$hlartists[$socialone['name']]=$socialone;
+							$p++;
 						}
-						$hlartists[$socialone['name']]=$socialone;
-						$p++;
 					}
 				}
-			
 				
 				
 				
